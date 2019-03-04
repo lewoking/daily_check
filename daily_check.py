@@ -69,7 +69,10 @@ def run_host_cmd(host, port, username, password, work_sheet):
         stdin, stdout, stderr = ssh.exec_command(check_cmd)
         return_info = stdout.read().strip()
         code_style = chardet.detect(return_info).get('encoding')
-        logging.info('return_info is :' + code_style)
+        if code_style is None:
+            logging.error('return_info is : none')
+        else:
+            logging.info('return_info is : ' + code_style)
 
         style_red = xlwt.easyxf('pattern: pattern solid, fore_colour red;' +
                                 'font: name Times New Roman, color-index black, bold on;' +
