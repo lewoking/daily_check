@@ -4,7 +4,8 @@
 # program: ssh remote execute command
 #          genaral data story local
 # author: chenhao
-# date: 2015-09-14
+# fork:lewoking
+# date: 2019-03-04
 
 import sys
 import paramiko
