@@ -69,7 +69,7 @@ def run_host_cmd(host, port, username, password, work_sheet):
         stdin, stdout, stderr = ssh.exec_command(check_cmd)
         return_info = stdout.read().strip()
         code_style = chardet.detect(return_info).get('encoding')
-        logging.info('return_info is' + code_style)
+        logging.info('return_info is :' + code_style)
 
         style_red = xlwt.easyxf('pattern: pattern solid, fore_colour red;' +
                                 'font: name Times New Roman, color-index black, bold on;' +
@@ -96,14 +96,14 @@ def run_host_cmd(host, port, username, password, work_sheet):
             try:
                 work_sheet.write(rows, 3, return_info.decode('utf-8'), style_red)
             except UnicodeDecodeError:
-                work_sheet.write(rows, 3, return_info.decode('gbk'), style_red)
+                work_sheet.write(rows, 3, return_info.decode('gb2312'), style_red)
             else:
                 logging.warning('code is: utf-8')
         else:
             try:
                 work_sheet.write(rows, 3, return_info.decode('utf-8'))
             except UnicodeDecodeError:
-                work_sheet.write(rows, 3, return_info.decode('gbk'))
+                work_sheet.write(rows, 3, return_info.decode('gb2312'))
             else:
                 logging.warning('code is: utf-8')
 
@@ -112,7 +112,7 @@ def run_host_cmd(host, port, username, password, work_sheet):
         try:
             check_info = check_type + '\t' + check_cmd + '\t' + check_base_line + '\t' + return_info.decode('utf-8')
         except UnicodeDecodeError:
-            check_info = check_type + '\t' + check_cmd + '\t' + check_base_line + '\t' + return_info.decode('gbk')
+            check_info = check_type + '\t' + check_cmd + '\t' + check_base_line + '\t' + return_info.decode('gb2312')
         else:
             logging.info('code is: utf-8')
         check_info = check_info.strip('\n')
