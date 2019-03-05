@@ -69,8 +69,11 @@ def run_host_cmd(host, port, username, password, work_sheet):
         stdin, stdout, stderr = ssh.exec_command(check_cmd)
         return_info = stdout.read().strip()
         code_style = chardet.detect(return_info).get('encoding')
-        logging.info('return_info is : ' , code_style)
-        
+        if return_info is None:
+            logging.warning('return_info is : None')
+        else:
+            logging.info('return_info is : ' , code_style)
+
         try:
             return_inf = return_info.decode('gb2312')
         except UnicodeDecodeError:
