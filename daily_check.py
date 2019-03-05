@@ -72,7 +72,7 @@ def run_host_cmd(host, port, username, password, work_sheet):
         if return_info is None:
             logging.warning('return_info is : None')
         else:
-            logging.info('return_info is : ' , code_style)
+            logging.info('return_info is : ' + code_style)
 
         try:
             return_inf = return_info.decode('gb2312')
