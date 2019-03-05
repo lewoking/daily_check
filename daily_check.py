@@ -105,7 +105,7 @@ def run_host_cmd(host, port, username, password, work_sheet):
             work_sheet.write(rows, 3, return_inf)
 
         work_sheet.write(rows, 4, 'server IP: ' + host)
-        check_info = check_type + '\t' + check_cmd + '\t' + check_base_line + '\t' + return_inf)
+        check_info = check_type + '\t' + check_cmd + '\t' + check_base_line + '\t' + return_inf
         check_info = check_info.strip('\n')
         check_info += '\t' + 'server IP: ' + host
         logging.info(check_info)
