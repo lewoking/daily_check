@@ -69,10 +69,14 @@ def run_host_cmd(host, port, username, password, work_sheet):
         stdin, stdout, stderr = ssh.exec_command(check_cmd)
         return_info = stdout.read().strip()
         code_style = chardet.detect(return_info).get('encoding')
-        if code_style is None:
-            logging.error('return_info is : none')
+        logging.info('return_info is : ' , code_style)
+        
+        try:
+            return_inf = return_info.decode('gb2312')
+        except UnicodeDecodeError:
+            return_inf = return_info.decode('utf-8')
         else:
-            logging.info('return_info is : ' + code_style)
+            logging.warning('code is: gb2312')
 
         style_red = xlwt.easyxf('pattern: pattern solid, fore_colour red;' +
                                 'font: name Times New Roman, color-index black, bold on;' +
@@ -82,13 +86,13 @@ def run_host_cmd(host, port, username, password, work_sheet):
         error_flag = False
 
         if opration == '>':
-            if str(base_value) > str(return_info):
+            if str(base_value) > str(return_inf):
                 error_flag = True
         elif opration == '=':
-            if str(return_info) != str(base_value):
+            if str(return_inf) != str(base_value):
                 error_flag = True
         elif opration == '<':
-            if str(base_value) < str(return_info):
+            if str(base_value) < str(return_inf):
                 error_flag = True
         elif opration == '-':
                 error_flag = True
@@ -96,28 +100,12 @@ def run_host_cmd(host, port, username, password, work_sheet):
         if error_flag:
             logging.warning(host + ' checked diff')
             logging.warning('command is: ' + items[1])
-            try:
-                work_sheet.write(rows, 3, return_info.decode('utf-8'), style_red)
-            except UnicodeDecodeError:
-                work_sheet.write(rows, 3, return_info.decode('gb2312'), style_red)
-            else:
-                logging.warning('code is: utf-8')
+            work_sheet.write(rows, 3, return_inf, style_red)
         else:
-            try:
-                work_sheet.write(rows, 3, return_info.decode('utf-8'))
-            except UnicodeDecodeError:
-                work_sheet.write(rows, 3, return_info.decode('gb2312'))
-            else:
-                logging.warning('code is: utf-8')
-
+            work_sheet.write(rows, 3, return_inf)
 
         work_sheet.write(rows, 4, 'server IP: ' + host)
-        try:
-            check_info = check_type + '\t' + check_cmd + '\t' + check_base_line + '\t' + return_info.decode('utf-8')
-        except UnicodeDecodeError:
-            check_info = check_type + '\t' + check_cmd + '\t' + check_base_line + '\t' + return_info.decode('gb2312')
-        else:
-            logging.info('code is: utf-8')
+        check_info = check_type + '\t' + check_cmd + '\t' + check_base_line + '\t' + return_inf)
         check_info = check_info.strip('\n')
         check_info += '\t' + 'server IP: ' + host
         logging.info(check_info)
