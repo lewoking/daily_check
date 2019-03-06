@@ -24,12 +24,18 @@ def run_command(items):
     user=items[1]
     password=items[2]
     check_dir=items[3]
-    filename =items[4]
+    file_head =items[4]
+    file_end =items[5]
+    gap = items[5]
 
     ftp = ftplib.FTP(server)
     ftp.login(user,password)
-
-    ntime = [time.strftime('%Y%m%d',time.localtime(time.time()))+ str(x).zfill(2) for x in range(0,23)]
+    if gap == 10 :
+        mtime = [0,10.20,30,40,50]
+    else:
+        mtime = [0,5,10,15,20,25,30,35,40,45,50,55]
+    ntime = [time.strftime('%Y%m%d',time.localtime(time.time()))+ str(x).zfill(2) for x in range(0,23) ]
+    ntime = [ntime + str(mtime).zfill(2) for mtime in mtime]
     need_file = [ntime+ filename for ntime in ntime]
     files = []
     ftp.cwd(check_dir)
