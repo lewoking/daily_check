@@ -12,12 +12,7 @@ import ftplib
 
 
 
-pypath = os.getcwd()
-with open(pypath +'\host.ini', 'r') as host_info:
-    for line in host_info.readlines():
-        if line[0:1] == '#':continue
-        items = line.split()
-        run_command(items)
+
 
 def run_command(items):
     server=items[0]
@@ -64,4 +59,10 @@ def main():
     diff(listA, listB)
 
 if __name__ == '__main__':
+    pypath = os.getcwd()
+    with open(pypath +'\host.ini', 'r') as host_info:
+        for line in host_info.readlines():
+            if line[0:1] == '#':continue
+            items = line.split()
+            run_command(items)
     main()
