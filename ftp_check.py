@@ -32,12 +32,14 @@ def run_command(items):
     ftp.login(user,password)
     if gap == 10 :
         mtime = [ str(x).zfill(2) + str(y).zfill(2) for x in range(0,24) for y in range(0,60,10)]
-    else:
+    elif gap == 5 :
         mtime = [ str(x).zfill(2) + str(y).zfill(2) for x in range(0,24) for y in range(0,60,5)]
+    else:
+        print ('time error')
     for z in mtime:
-        mtime = time.strftime('%Y%m%d',time.localtime(time.time()))+ z + " "
-    ntime = mtime.split()
-    need_file = [ntime+ filename for ntime in ntime]
+        sp = sp + file_head + time.strftime('%Y%m%d',time.localtime(time.time()))+ z + file_end +" "
+    needfile = sp.split()
+
     files = []
     ftp.cwd(check_dir)
     files = ftp.nlst()
