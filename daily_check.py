@@ -148,4 +148,4 @@ if __name__ == '__main__':
         work_sheet = run_host_cmd(host, port, username, password, work_sheet)
         logging.info(host + ' check finish !\n')
     file_pre = time.strftime(ISOTIMEFORMAT, time.localtime(time.time()))
-    work_book.save(file_pre + '_xujian.xls')
+    work_book.save(file_pre + '_xunjian.xls')
