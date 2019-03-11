@@ -20,6 +20,11 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 
 
 def header(work_sheet):
+    style0 = xlwt.easyxf('pattern: pattern solid, fore_colour yellow;' +
+                     'font: name Times New Roman, color-index black, bold on;' +
+                     'borders: left thick, right thick, top thick, bottom thick;' +
+                     'align: horiz center',
+                     num_format_str='0,000.00')
     work_sheet.write(0, 0, '检查项目', style0)
     work_sheet.write(0, 1, '命令', style0)
     work_sheet.write(0, 2, '基准', style0)
@@ -59,10 +64,10 @@ def run_host_cmd(host, port, username, password, work_sheet):
         stdin, stdout, stderr = ssh.exec_command(check_cmd)
         return_info = stdout.read().strip()
         code_style = chardet.detect(return_info).get('encoding')
-        if return_info is None:
-            logging.warning('return_info is : None')
-        else:
-            logging.info('return_info is : ' + code_style)
+#        if return_info is None:
+#            logging.warning('return_info is : None')
+#        else:
+#            logging.info('return_info is : ' + code_style)
 
         try:
             return_inf = return_info.decode('gb2312')
@@ -108,20 +113,13 @@ def run_host_cmd(host, port, username, password, work_sheet):
 
 def main():
     logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                    filename='check.log',
-                    filemode='w',
-                    datefmt='%Y-%m-%d %X')
+                format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                filename='check.log',
+                filemode='w',
+                datefmt='%Y-%m-%d %X')
+
     imp.reload(sys)
     ISOTIMEFORMAT = '%Y-%m-%d'
-    pypath = os.getcwd()
-
-    style0 = xlwt.easyxf('pattern: pattern solid, fore_colour yellow;' +
-                         'font: name Times New Roman, color-index black, bold on;' +
-                         'borders: left thick, right thick, top thick, bottom thick;' +
-                         'align: horiz center',
-                         num_format_str='0,000.00')
-
     work_book = xlwt.Workbook(encoding='utf-8')
     work_sheet = work_book.add_sheet('A Test Sheet')
     work_sheet = header(work_sheet)
@@ -140,14 +138,15 @@ def main():
 
         work_sheet = run_host_cmd(host, port, username, password, work_sheet)
         logging.info(host + ' check finish !\n')
+    hosts_file.close()
     file_pre = time.strftime(ISOTIMEFORMAT, time.localtime(time.time()))
     work_book.save(file_pre + '_xunjian.xls')
 
 if __name__ == '__main__':
+    pypath = os.getcwd()
     scheduler = BlockingScheduler()
-    scheduler.add_job(main, 'interval', days=1)
-    print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C    '))
-    
+    scheduler.add_job(main, 'interval', minutes=2)
+#    print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C    '))
     try:
         scheduler.start()
     except (KeyboardInterrupt, SystemExit):
