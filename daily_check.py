@@ -16,15 +16,7 @@ import logging
 import imp
 import os
 import chardet
-
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                    filename='check.log',
-                    filemode='w',
-                    datefmt='%Y-%m-%d %X')
-imp.reload(sys)
-ISOTIMEFORMAT = '%Y-%m-%d'
-
+from apscheduler.schedulers.blocking import BlockingScheduler
 
 
 def header(work_sheet):
@@ -35,8 +27,6 @@ def header(work_sheet):
     work_sheet.write(0, 4, '检查主机', style0)
     logging.info('header add ok!')
     return work_sheet
-
-pypath = os.getcwd()
 
 def run_host_cmd(host, port, username, password, work_sheet):
     ssh = paramiko.SSHClient()
@@ -116,12 +106,15 @@ def run_host_cmd(host, port, username, password, work_sheet):
     ssh.close()
     return work_sheet
 
-
-if __name__ == '__main__':
-    #   try:
-    #     main()
-    #   except Exception,e:
-    #     print e
+def main():
+    logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                    filename='check.log',
+                    filemode='w',
+                    datefmt='%Y-%m-%d %X')
+    imp.reload(sys)
+    ISOTIMEFORMAT = '%Y-%m-%d'
+    pypath = os.getcwd()
 
     style0 = xlwt.easyxf('pattern: pattern solid, fore_colour yellow;' +
                          'font: name Times New Roman, color-index black, bold on;' +
@@ -149,3 +142,13 @@ if __name__ == '__main__':
         logging.info(host + ' check finish !\n')
     file_pre = time.strftime(ISOTIMEFORMAT, time.localtime(time.time()))
     work_book.save(file_pre + '_xunjian.xls')
+
+if __name__ == '__main__':
+    scheduler = BlockingScheduler()
+    scheduler.add_job(main, 'interval', days=1)
+    print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C    '))
+    
+    try:
+        scheduler.start()
+    except (KeyboardInterrupt, SystemExit):
+        pass
