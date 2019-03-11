@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Date    : 2019-03-07 11:17:12
-# @fork  : liujg (lewoking@gmail.com)
-# @Link    : http://liujg.tk/
+# @fork  : guozi
+# @Link    : https://github.com/lewoking/
 # @Version : $Id$
 
 import os
