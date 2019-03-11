@@ -145,7 +145,7 @@ def main():
 if __name__ == '__main__':
     pypath = os.getcwd()
     scheduler = BlockingScheduler()
-    scheduler.add_job(main, 'interval', minutes=2)
+    scheduler.add_job(main, 'interval', days=1)
 #    print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C    '))
     try:
         scheduler.start()
