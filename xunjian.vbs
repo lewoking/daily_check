@@ -1,7 +1,7 @@
 Dim OK
 set bag=getobject("winmgmts:\\.\root\cimv2") 
 set pipe=bag.ExecQuery("select * from win32_process where name='wscript.exe'")
-if pipe.count &gt; 1 then
+if pipe.count > 1 then
     Msgbox "do not touch again"
 else 
 Set ws = CreateObject("Wscript.Shell")
