@@ -6,7 +6,7 @@ if pipe.count &gt; 1 then
 else 
 Set ws = CreateObject("Wscript.Shell")
 Do
-    ws.run ""d:\daily_check\daily_check.exe",0
+    ws.run "daily_check.exe",0
     Wscript.Sleep(1000*3600*24)
 Loop
 end if
