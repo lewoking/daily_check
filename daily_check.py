@@ -20,11 +20,12 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 
 
 def header(work_sheet):
-    style0 = xlwt.easyxf('pattern: pattern solid, fore_colour yellow;' +
-                     'font: name Times New Roman, color-index black, bold on;' +
-                     'borders: left thick, right thick, top thick, bottom thick;' +
-                     'align: horiz center',
-                     num_format_str='0,000.00')
+    style0 = xlwt.easyxf(
+        'pattern: pattern solid, fore_colour yellow;' +
+        'font: name Times New Roman, color-index black, bold on;' +
+        'borders: left thick, right thick, top thick, bottom thick;' +
+        'align: horiz center',
+        num_format_str='0,000.00')
     work_sheet.write(0, 0, '检查项目', style0)
     work_sheet.write(0, 1, '命令', style0)
     work_sheet.write(0, 2, '基准', style0)
@@ -33,9 +34,10 @@ def header(work_sheet):
     logging.info('header add ok!')
     return work_sheet
 
+
 def run_host_cmd(host, port, username, password, work_sheet):
     ssh = paramiko.SSHClient()
-    command_file = open(pypath +'/hosts/' + host + '.cmd', 'r')
+    command_file = open(pypath + '/hosts/' + host + '.cmd', 'r')
 
     for line in command_file.readlines():
         rows = len(work_sheet.rows)
@@ -55,7 +57,12 @@ def run_host_cmd(host, port, username, password, work_sheet):
 
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         try:
-            ssh.connect(host, port, username, password, key_filename=None, timeout=2)
+            ssh.connect(host,
+                        port,
+                        username,
+                        password,
+                        key_filename=None,
+                        timeout=2)
         except Exception as e:
             logging.error('can not connect host: ' + host)
             logging.error('command can not exec: ' + check_cmd)
@@ -64,10 +71,10 @@ def run_host_cmd(host, port, username, password, work_sheet):
         stdin, stdout, stderr = ssh.exec_command(check_cmd)
         return_info = stdout.read().strip()
         code_style = chardet.detect(return_info).get('encoding')
-#        if return_info is None:
-#            logging.warning('return_info is : None')
-#        else:
-#            logging.info('return_info is : ' + code_style)
+        #        if return_info is None:
+        #            logging.warning('return_info is : None')
+        #        else:
+        #            logging.info('return_info is : ' + code_style)
 
         try:
             return_inf = return_info.decode('gb2312')
@@ -76,10 +83,11 @@ def run_host_cmd(host, port, username, password, work_sheet):
         else:
             logging.warning('code is: gb2312')
 
-        style_red = xlwt.easyxf('pattern: pattern solid, fore_colour red;' +
-                                'font: name Times New Roman, color-index black, bold on;' +
-                                'borders: left thick, right thick, top thick, bottom thick;' +
-                                'align: horiz center')
+        style_red = xlwt.easyxf(
+            'pattern: pattern solid, fore_colour red;' +
+            'font: name Times New Roman, color-index black, bold on;' +
+            'borders: left thick, right thick, top thick, bottom thick;' +
+            'align: horiz center')
 
         error_flag = False
 
@@ -93,7 +101,7 @@ def run_host_cmd(host, port, username, password, work_sheet):
             if str(base_value) < str(return_inf):
                 error_flag = True
         elif opration == '-':
-                error_flag = True
+            error_flag = True
 
         if error_flag:
             logging.warning(host + ' checked diff')
@@ -111,12 +119,14 @@ def run_host_cmd(host, port, username, password, work_sheet):
     ssh.close()
     return work_sheet
 
+
 def main():
-    logging.basicConfig(level=logging.INFO,
-                format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                filename='check.log',
-                filemode='w',
-                datefmt='%Y-%m-%d %X')
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+        filename='check.log',
+        filemode='w',
+        datefmt='%Y-%m-%d %X')
 
     imp.reload(sys)
     ISOTIMEFORMAT = '%Y-%m-%d'
@@ -124,7 +134,7 @@ def main():
     work_sheet = work_book.add_sheet('A Test Sheet')
     work_sheet = header(work_sheet)
 
-    hosts_file = open(pypath +'/hosts/host.info', 'r')
+    hosts_file = open(pypath + '/hosts/host.info', 'r')
 
     for line in hosts_file.readlines():
         if line[0:1] == '#': continue
@@ -142,11 +152,12 @@ def main():
     file_pre = time.strftime(ISOTIMEFORMAT, time.localtime(time.time()))
     work_book.save(file_pre + '_xunjian.xls')
 
+
 if __name__ == '__main__':
     pypath = os.getcwd()
     scheduler = BlockingScheduler()
     scheduler.add_job(main, 'interval', days=1)
-#    print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C    '))
+    #    print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C    '))
     try:
         scheduler.start()
     except (KeyboardInterrupt, SystemExit):
