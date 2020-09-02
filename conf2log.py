@@ -30,6 +30,9 @@ def run_command(item):
         print ('host command success :',host)
     except:
         print ("ssh connect timeout,please check network connect.",item[0])
+        with open("error.log","a") as f:
+            f.write("\n-------------------------------------分割线-----------------------------------------\n")
+            f.write("ssh connect timeout,please check network connect.%s"%(item[0]))
 
 
 if __name__ == '__main__':
