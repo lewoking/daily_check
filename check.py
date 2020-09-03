@@ -52,7 +52,9 @@ def run_command(item):
         rows = len(work_sheet.rows)
         work_sheet.write(rows,0,host)
         work_sheet.write(rows,1,"ssh connect timeout,please check network connect.")
+    ssh.close()
     cmds.close()
+
 
 if __name__ == '__main__':
     style0 = xlwt.easyxf('pattern: pattern solid,fore_colour yellow;' +
