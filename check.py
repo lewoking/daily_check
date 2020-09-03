@@ -8,6 +8,7 @@ import xlwt
 import paramiko
 import os
 import sys
+import time
 
 def header(work_sheet):
     work_sheet.write(0, 0,'检查主机',style0)
@@ -40,20 +41,22 @@ def run_command(item):
             items = cmd.split('#')
             check_type = items[0].encode('utf-8')
             command = items[1].encode('utf-8')
-            stdin, stdout, stderr = ssh.exec_command(command.decode('utf-8'))
-            stdout.channel.close()
-            return_info = stdout.read().strip()   # readlines()
+            ssh_con=ssh.invoke_shell()
+            ssh_con.send(command.decode('utf-8'))
+            time.sleep(2)
+            # print(ssh_con.recv(65535).decode('utf-8'))  #只能读取一次  必须注释掉
+            return_info=ssh_con.recv(65535).decode('utf-8')
             work_sheet.write(rows,0,host)
             work_sheet.write(rows,1,items[0])
             work_sheet.write(rows,2,items[1])
-            work_sheet.write(rows,3,return_info.decode('utf-8'))
+            work_sheet.write(rows,3,return_info)
         print ('host command success :',host)
+        ssh.close()
     except:
         print ("ssh connect timeout,please check network connect.",item[0])
         rows = len(work_sheet.rows)
         work_sheet.write(rows,0,host)
         work_sheet.write(rows,1,"ssh connect timeout,please check network connect.")
-    ssh.close()
     cmds.close()
 
 
