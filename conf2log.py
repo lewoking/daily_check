@@ -29,18 +29,21 @@ def run_command(item):
         ssh_con.send("screen-length 0 temporary\n")
         ssh_con.send("display current-configuration\n")
         time.sleep(2)
+        # print(ssh_con.recv(5000).decode('utf-8'))  #只能读取一次  必须注释掉
+        output=ssh_con.recv(5000).decode('utf-8')
         ssh.close()
-        print(ssh_con.recv(5000).decode('utf-8'))
         # stdin, stdout, stderr = ssh.exec_command('display current-configuration \n')
         # return_info = stdout.read().strip()
-        with open("%s.log"%(item[0]),"a") as f:
-            f.write("%s"%(ssh_con.recv(5000).decode('utf-8')))
+        with open("%s.log"%(item[0]),"a+") as f:
+            # f.write("--\n")
+            f.write("%s"%output)
         print ('host command success :',host)
     except:
         print ("ssh connect timeout,please check network connect.",item[0])
-        with open("error.log","a") as f:
-            f.write("\n-------------------------------------分割线-----------------------------------------\n")
-            f.write("ssh connect timeout,please check network connect.%s"%(item[0]))
+        with open("error.log","a") as fe:
+            fe.write("\n-------------------------------------分割线-----------------------------------------\n")
+            fe.write("ssh connect timeout,please check network connect.%s"%(item[0]))
+    ssh.close()
     
 
 
