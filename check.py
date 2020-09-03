@@ -51,12 +51,12 @@ def run_command(item):
             work_sheet.write(rows,2,items[1])
             work_sheet.write(rows,3,return_info)
         print ('host command success :',host)
-        ssh.close()
     except:
         print ("ssh connect timeout,please check network connect.",item[0])
         rows = len(work_sheet.rows)
         work_sheet.write(rows,0,host)
         work_sheet.write(rows,1,"ssh connect timeout,please check network connect.")
+    ssh.close()
     cmds.close()
 
 
